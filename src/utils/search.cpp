@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include <psp2/sysmodule.h>
 #include <psp2/ime_dialog.h>
 #include <string>
@@ -105,12 +107,10 @@ int updateImeDialog() {
 		memset(&result, 0, sizeof(SceImeDialogResult));
 		sceImeDialogGetResult(&result);
 
-		if (result.button == SCE_IME_DIALOG_BUTTON_CLOSE) {
+		if (result.button == SCE_IME_DIALOG_BUTTON_CLOSE)
 			status = IME_DIALOG_RESULT_CANCELED;
-		} else {
-			// Convert UTF16 to UTF8
-			utf16_to_utf8(ime_input_text_utf16, ime_input_text_utf8);
-		}
+		else
+			utf16_to_utf8(ime_input_text_utf16, ime_input_text_utf8); // Convert UTF16 to UTF8
 
 		sceImeDialogTerm();
 
@@ -121,14 +121,18 @@ int updateImeDialog() {
 }
 
 json sortJson(string filter, json original) {
+	filter = toLowercase(filter);
 	json ret;
 	int arrayLength = static_cast<int>(original.size());
 
-	for(int i=0;i<arrayLength;i++) {
-		if(original[i]["name"].get<string>().find(filter) != string::npos || original[i]["description"].get<string>().find(filter) != string::npos) {
+	for (int i = 0; i < arrayLength; i++)
+		if (toLowercase(original[i]["name"].get<string>()).find(filter) != string::npos || toLowercase(original[i]["description"].get<string>()).find(filter) != string::npos)
 			ret.push_back(original[i]);
-		}
-	}
 
 	return ret;
+}
+
+string toLowercase(string strToConvert) {
+    transform(strToConvert.begin(), strToConvert.end(), strToConvert.begin(), ::tolower);
+    return strToConvert;
 }

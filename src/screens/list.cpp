@@ -69,8 +69,7 @@ void List::draw(SharedData &sharedData, unsigned int button) {
                 sharedData.blockCross = true;
                 sharedData.screenshots.clear();
 
-                if(sharedData.plugins[sharedData.cursorY]["screenshots"].get<string>() != "") {
-                if (!sharedData.liteMode && sharedData.plugins[sharedData.cursorY]["screenshots"].get<string>() != "") {
+                if(sharedData.fullMode && sharedData.plugins[sharedData.cursorY]["screenshots"].get<string>() != "") {
                     if(!sharedData.screenshots.empty()) {
                         for(int i=0;i<sharedData.screenshots.size();i++) {
                             if(sharedData.screenshots[i])
@@ -84,7 +83,7 @@ void List::draw(SharedData &sharedData, unsigned int button) {
 
                     for(string subPath : subPaths) {
                         Filesystem::mkDir("ux0:data/Easy_Plugins/screenshots");
-                        curlDownload((imageWebBase+subPath).c_str(), ("ux0:data/Easy_Plugins/"+subPath).c_str());
+                        curlDownload((PARENT_URL + subPath).c_str(), ("ux0:data/Easy_Plugins/" +subPath).c_str());
 
                         vita2d_texture *img;
                         string img_file = ("ux0:data/Easy_Plugins/"+subPath);

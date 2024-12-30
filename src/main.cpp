@@ -45,7 +45,7 @@ void initSceAppUtil(SharedData &sharedData) {
 	memset(&init_param, 0, sizeof(SceAppUtilInitParam));
 	memset(&boot_param, 0, sizeof(SceAppUtilBootParam));
 	
-	// Check for -lite
+	// Check for -full
 	sceAppUtilInit(&init_param, &boot_param);
 	SceAppUtilAppEventParam eventParam;
 	memset(&eventParam, 0, sizeof(SceAppUtilAppEventParam));
@@ -53,8 +53,8 @@ void initSceAppUtil(SharedData &sharedData) {
 	if (eventParam.type == 0x05) {
 		char buffer[2048];
 		sceAppUtilAppEventParseLiveArea(&eventParam, buffer);
-		if (strstr(buffer, "-lite"))
-			sharedData.liteMode = true;
+		if (strstr(buffer, "-full"))
+			sharedData.fullMode = true;
 	}
 	
 	// Set common dialog config
@@ -98,9 +98,9 @@ int main() {
     vita2d_init();
     
     SharedData sharedData;
-	
+
     initSceAppUtil(sharedData);
-    
+
     Filesystem::removePath("ux0:data/Easy_Plugins");
     Filesystem::mkDir("ux0:data/Easy_Plugins");
 
@@ -110,7 +110,7 @@ int main() {
     
     httpInit();
     netInit();
-    curlDownload("http://rinnegatamante.it/vitadb/list_plugins_json.php", "ux0:data/Easy_Plugins/plugins.json");
+    curlDownload(PLUGIN_URL, "ux0:data/Easy_Plugins/plugins.json");
 
     if(doesDirExist("ux0:tai")) sharedData.taiConfigPath = "ux0:tai/";
     else if(doesDirExist("ur0:tai")) sharedData.taiConfigPath = "ur0:tai/";

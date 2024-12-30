@@ -8,7 +8,8 @@
 
 #include "utils/json.hpp"
 
-#define imageWebBase "http://rinnegatamante.it/vitadb/"
+#define PARENT_URL "http://rinnegatamante.eu/vitadb/"
+#define PLUGIN_URL PARENT_URL "list_plugins_json.php"
 
 using namespace std;
 
@@ -26,7 +27,7 @@ class AppInfo {
 };
 
 struct SharedData {
-    bool liteMode = false;
+    bool fullMode = false;
     int scene = 0;
     int cursorY = 0;
     bool blockCross = false;

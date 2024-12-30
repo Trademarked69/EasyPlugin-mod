@@ -83,7 +83,8 @@ int getAppData(vector<AppInfo> &ret) {
 int main() {
     vita2d_init();
     initSceAppUtil();
-
+    
+    Filesystem::removePath("ux0:data/Easy_Plugins");
     Filesystem::mkDir("ux0:data/Easy_Plugins");
 
     vita2d_set_clear_color(RGBA8(255,255,255,255));

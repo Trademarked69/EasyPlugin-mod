@@ -26,6 +26,7 @@ class AppInfo {
 };
 
 struct SharedData {
+    bool liteMode = false;
     int scene = 0;
     int cursorY = 0;
     bool blockCross = false;

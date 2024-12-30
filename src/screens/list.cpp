@@ -70,6 +70,7 @@ void List::draw(SharedData &sharedData, unsigned int button) {
                 sharedData.screenshots.clear();
 
                 if(sharedData.plugins[sharedData.cursorY]["screenshots"].get<string>() != "") {
+                if (!sharedData.liteMode && sharedData.plugins[sharedData.cursorY]["screenshots"].get<string>() != "") {
                     if(!sharedData.screenshots.empty()) {
                         for(int i=0;i<sharedData.screenshots.size();i++) {
                             if(sharedData.screenshots[i])

@@ -8,6 +8,9 @@
 #include <psp2/ime_dialog.h>
 #include <string>
 
+#include <stdio.h>
+#include <string.h>
+
 #include "main.hpp"
 #include "sqlite3.h"
 #include "net/download.hpp"
@@ -34,15 +37,26 @@ static int callback(void *data, int argc, char **argv, char **column_name) {
 	return 0;
 }
 
-void initSceAppUtil()
-{
+void initSceAppUtil(SharedData &sharedData) {
+
 	// Init SceAppUtil
 	SceAppUtilInitParam init_param;
 	SceAppUtilBootParam boot_param;
 	memset(&init_param, 0, sizeof(SceAppUtilInitParam));
 	memset(&boot_param, 0, sizeof(SceAppUtilBootParam));
+	
+	// Check for -lite
 	sceAppUtilInit(&init_param, &boot_param);
-
+	SceAppUtilAppEventParam eventParam;
+	memset(&eventParam, 0, sizeof(SceAppUtilAppEventParam));
+	sceAppUtilReceiveAppEvent(&eventParam);
+	if (eventParam.type == 0x05) {
+		char buffer[2048];
+		sceAppUtilAppEventParseLiveArea(&eventParam, buffer);
+		if (strstr(buffer, "-lite"))
+			sharedData.liteMode = true;
+	}
+	
 	// Set common dialog config
 	SceCommonDialogConfigParam config;
 	sceCommonDialogConfigParamInit(&config);
@@ -82,7 +96,10 @@ int getAppData(vector<AppInfo> &ret) {
 
 int main() {
     vita2d_init();
-    initSceAppUtil();
+    
+    SharedData sharedData;
+	
+    initSceAppUtil(sharedData);
     
     Filesystem::removePath("ux0:data/Easy_Plugins");
     Filesystem::mkDir("ux0:data/Easy_Plugins");
@@ -94,8 +111,6 @@ int main() {
     httpInit();
     netInit();
     curlDownload("http://rinnegatamante.it/vitadb/list_plugins_json.php", "ux0:data/Easy_Plugins/plugins.json");
-
-    SharedData sharedData;
 
     if(doesDirExist("ux0:tai")) sharedData.taiConfigPath = "ux0:tai/";
     else if(doesDirExist("ur0:tai")) sharedData.taiConfigPath = "ur0:tai/";
